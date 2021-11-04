@@ -7,7 +7,6 @@ import (
 	_ "project-1/docs"
 
 	"project-1/controllers"
-	"project-1/database"
 
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -24,17 +23,25 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	database.StartDB()
+	// database.StartDB()
 
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", HelloWorld).Methods("GET")
 	r.HandleFunc("/todos", controllers.GetAllTodos).Methods("GET")
+	r.HandleFunc("/todo/", controllers.GetTodoDetail).Methods("GET")
+	r.HandleFunc("/create-todo", controllers.CreateTodo).Methods("POST")
+
+	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
 	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
 	log.Println("Server start at http://localhost:8080")
 	http.ListenAndServe(":8080", r)
+}
+
+func notfoundHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("page not found"))
 }
 
 func HelloWorld(rw http.ResponseWriter, r *http.Request) {

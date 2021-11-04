@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"project-1/database"
 	"project-1/models"
@@ -22,4 +23,50 @@ func GetAllTodos(rw http.ResponseWriter, r *http.Request) {
 
 	db.Find(&todos)
 	json.NewEncoder(rw).Encode(todos)
+}
+
+// GetTodoDetail godoc
+// @Summary Get todo detail
+// @Description Get details of todo by id
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Todo
+// @Router /todo [get]
+func GetTodoDetail(rw http.ResponseWriter, r *http.Request) {
+	var id = r.URL.Query().Get("id")
+	var todo models.Todo
+
+	db := database.GetDB()
+
+	db.Where("id = ?", id).First(todo)
+	json.NewEncoder(rw).Encode(todo)
+}
+
+// CreateTodo godoc
+// @Summary Create todo
+// @Description create todo from parameter
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Todo
+// @Router /create-todo [post]
+func CreateTodo(rw http.ResponseWriter, r *http.Request) {
+	var todo models.Todo
+
+	c, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	defer r.Body.Close()
+
+	if err := json.Unmarshal(c, &todo); err != nil {
+		panic(err)
+	}
+
+	db := database.GetDB()
+
+	db.Create(todo)
+	json.NewEncoder(rw).Encode(todo)
 }
