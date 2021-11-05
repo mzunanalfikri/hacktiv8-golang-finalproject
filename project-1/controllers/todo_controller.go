@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"project-1/database"
 	"project-1/models"
+
+	"github.com/gorilla/mux"
 )
 
 // GetAllTodos godoc
@@ -28,14 +30,17 @@ func GetAllTodos(rw http.ResponseWriter, r *http.Request) {
 // GetTodoDetail godoc
 // @Summary Get todo detail
 // @Description Get details of todo by id
-// @Tags todo
+// @Tags todos
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.Todo
 // @Router /todo [get]
 func GetTodoDetail(rw http.ResponseWriter, r *http.Request) {
-	var id = r.URL.Query().Get("id")
-	var todo models.Todo
+	var (
+		vars = mux.Vars(r)
+		id   = vars["id"]
+		todo models.Todo
+	)
 
 	db := database.GetDB()
 
@@ -46,7 +51,7 @@ func GetTodoDetail(rw http.ResponseWriter, r *http.Request) {
 // CreateTodo godoc
 // @Summary Create todo
 // @Description create todo from parameter
-// @Tags todo
+// @Tags todos
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.Todo
@@ -63,7 +68,7 @@ func CreateTodo(rw http.ResponseWriter, r *http.Request) {
 
 	if err := json.Unmarshal(c, &todo); err != nil {
 		panic(err)
-	}
+	}	
 
 	db := database.GetDB()
 

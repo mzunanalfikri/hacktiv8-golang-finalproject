@@ -34,6 +34,36 @@ info:
   title: TOdo Application
   version: "1.0"
 paths:
+  /create-todo:
+    post:
+      consumes:
+      - application/json
+      description: create todo from parameter
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todo'
+      summary: Create todo
+      tags:
+      - todos
+  /todo:
+    get:
+      consumes:
+      - application/json
+      description: Get details of todo by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todo'
+      summary: Get todo detail
+      tags:
+      - todos
   /todos:
     get:
       consumes:

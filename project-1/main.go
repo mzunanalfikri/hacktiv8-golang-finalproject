@@ -29,7 +29,7 @@ func main() {
 
 	r.HandleFunc("/", HelloWorld).Methods("GET")
 	r.HandleFunc("/todos", controllers.GetAllTodos).Methods("GET")
-	r.HandleFunc("/todo/", controllers.GetTodoDetail).Methods("GET")
+	r.HandleFunc("/todo/{id}", controllers.GetTodoDetail).Methods("GET")
 	r.HandleFunc("/create-todo", controllers.CreateTodo).Methods("POST")
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
