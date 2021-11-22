@@ -13,7 +13,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// @title TOdo Application
+// @title Todo Application
 // @version 1.0
 // @description This todo application API
 // @termsOfService http://swagger.io/terms

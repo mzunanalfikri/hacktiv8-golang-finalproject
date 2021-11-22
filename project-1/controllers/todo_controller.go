@@ -106,7 +106,7 @@ func CreateTodo(rw http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(rw).Encode(models.Response{Data: todo, Message: "Data created."})
 }
 
-// CreateTodo godoc
+// EditTodo godoc
 // @Summary Edit todo indentified by the given todo id
 // @Description Edit todo using the todo id
 // @Tags todos
