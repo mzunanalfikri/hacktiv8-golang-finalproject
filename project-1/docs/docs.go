@@ -44,17 +44,28 @@ var doc = `{
                     "todos"
                 ],
                 "summary": "Create todo",
+                "parameters": [
+                    {
+                        "description": "Create todo",
+                        "name": "todo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TodoPayload"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Todo"
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
             }
         },
-        "/todo": {
+        "/todo/{id}": {
             "get": {
                 "description": "Get details of todo by id",
                 "consumes": [
@@ -67,11 +78,89 @@ var doc = `{
                     "todos"
                 ],
                 "summary": "Get todo detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the todo",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Todo"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Edit todo using the todo id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Edit todo indentified by the given todo id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the todo to be edited",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Todo description",
+                        "name": "todo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TodoPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete todo corresponding to the input id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Delete todo identified by the given id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the todo to be deleted",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
                         }
                     }
                 }
@@ -117,6 +206,17 @@ var doc = `{
                 }
             }
         },
+        "models.Response": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Todo": {
             "type": "object",
             "properties": {
@@ -133,6 +233,14 @@ var doc = `{
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.TodoPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
                     "type": "string"
                 }
             }
@@ -191,5 +299,5 @@ func (s *s) ReadDoc() string {
 }
 
 func init() {
-	swag.Register("swagger", &s{})
+	swag.Register(swag.Name, &s{})
 }

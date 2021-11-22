@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"project-1/database"
 	_ "project-1/docs"
 
 	"project-1/controllers"
@@ -23,13 +24,15 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	// database.StartDB()
+	database.StartDB()
 
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", HelloWorld).Methods("GET")
 	r.HandleFunc("/todos", controllers.GetAllTodos).Methods("GET")
 	r.HandleFunc("/todo/{id}", controllers.GetTodoDetail).Methods("GET")
+	r.HandleFunc("/todo/{id}", controllers.EditTodo).Methods("PUT")
+	r.HandleFunc("/todo/{id}", controllers.DeleteTodo).Methods("DELETE")
 	r.HandleFunc("/create-todo", controllers.CreateTodo).Methods("POST")
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)

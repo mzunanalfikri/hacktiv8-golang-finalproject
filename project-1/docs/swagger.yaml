@@ -8,6 +8,13 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  models.Response:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+    type: object
   models.Todo:
     properties:
       createdAt:
@@ -19,6 +26,11 @@ definitions:
       id:
         type: integer
       updatedAt:
+        type: string
+    type: object
+  models.TodoPayload:
+    properties:
+      description:
         type: string
     type: object
 host: localhost:8080
@@ -39,21 +51,54 @@ paths:
       consumes:
       - application/json
       description: create todo from parameter
+      parameters:
+      - description: Create todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/models.TodoPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Todo'
+            $ref: '#/definitions/models.Response'
       summary: Create todo
       tags:
       - todos
-  /todo:
+  /todo/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete todo corresponding to the input id
+      parameters:
+      - description: ID of the todo to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete todo identified by the given id
+      tags:
+      - todos
     get:
       consumes:
       - application/json
       description: Get details of todo by id
+      parameters:
+      - description: ID of the todo
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -62,6 +107,32 @@ paths:
           schema:
             $ref: '#/definitions/models.Todo'
       summary: Get todo detail
+      tags:
+      - todos
+    put:
+      consumes:
+      - application/json
+      description: Edit todo using the todo id
+      parameters:
+      - description: ID of the todo to be edited
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Todo description
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/models.TodoPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Edit todo indentified by the given todo id
       tags:
       - todos
   /todos:
