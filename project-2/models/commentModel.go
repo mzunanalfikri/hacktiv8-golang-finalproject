@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	"github.com/asaskevich/govalidator"
+)
 
 type Comment struct {
 	ID        int
@@ -9,4 +14,12 @@ type Comment struct {
 	Message   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (c *Comment) Validate() error {
+	if govalidator.IsNull(c.Message) {
+		return fmt.Errorf("message is null")
+	}
+
+	return nil
 }

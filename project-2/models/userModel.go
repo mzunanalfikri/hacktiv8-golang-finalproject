@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/asaskevich/govalidator"
@@ -9,31 +10,33 @@ import (
 type User struct {
 	ID        int
 	Username  string
-	Email     string 
+	Email     string
 	Password  string
 	Age       int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func (u *User) Validate() {
+func (u *User) Validate() error {
 	if !govalidator.IsEmail(u.Email) {
-		// not email
+		return fmt.Errorf("email not valid")
 	}
 
 	if govalidator.IsNull(u.Email) {
-		// email is null
+		return fmt.Errorf("email is null")
 	}
 
 	if govalidator.IsNull(u.Username) {
-		// username is null
+		return fmt.Errorf("username is null")
 	}
 
 	if len(u.Password) < 6 {
-		// password too short
+		return fmt.Errorf("password too short")
 	}
 
 	if u.Age < 8 {
-		// under age
+		return fmt.Errorf("under age")
 	}
+
+	return nil
 }
