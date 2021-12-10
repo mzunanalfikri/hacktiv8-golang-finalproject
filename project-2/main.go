@@ -3,13 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
-	"project-2/database"
+	"project-2/config"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	database.StartDB()
+	config.StartDB()
 
 	r := mux.NewRouter()
 
