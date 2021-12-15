@@ -8,15 +8,15 @@ import (
 
 type MyClaim struct {
 	jwt.StandardClaims
-	Username string
+	ID int
 }
 
 var mySigningKey = []byte("MySecrets")
 
-func CreateToken(username string) string {
+func CreateToken(id int) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaim{
 		StandardClaims: jwt.StandardClaims{},
-		Username:       username,
+		ID:             id,
 	})
 
 	signedStr, err := token.SignedString(mySigningKey)

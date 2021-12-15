@@ -3,17 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
-	"project-2/config"
+	"project-2/controller"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	config.StartDB()
+	// config.StartDB()
 
 	r := mux.NewRouter()
 
-	// r.HandleFunc("/", HelloWorld).Methods("GET")
+	r.HandleFunc("/users/register", controller.RegisterUser).Methods("POST")
+	r.HandleFunc("/users/login", controller.LoginUser).Methods("POST")
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
