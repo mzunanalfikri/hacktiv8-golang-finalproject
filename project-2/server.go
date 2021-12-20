@@ -29,6 +29,12 @@ func main() {
 	photoGroup.HandleFunc("/{id}", controller.UpdatePhoto).Methods("PUT")
 	photoGroup.HandleFunc("/{id}", controller.DeletePhoto).Methods("DELETE")
 
+	commentGroup := r.PathPrefix("/comments").Subrouter()
+	commentGroup.HandleFunc("", controller.AddComments).Methods("POST")
+	commentGroup.HandleFunc("", controller.GetComments).Methods("GET")
+	commentGroup.HandleFunc("/{id}", controller.UpdateComment).Methods("PUT")
+	commentGroup.HandleFunc("/{id}", controller.DeleteComment).Methods("DELETE")
+
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
 	log.Println("Server start at http://localhost:8080")
