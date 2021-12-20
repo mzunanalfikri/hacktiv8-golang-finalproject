@@ -13,7 +13,7 @@ var (
 	user     = "postgres"
 	password = "postgres"
 	dbPort   = "5432"
-	dbname   = "hacktiv8-project-1"
+	dbname   = "hacktiv8-project-2"
 	db       *gorm.DB
 	err      error
 )

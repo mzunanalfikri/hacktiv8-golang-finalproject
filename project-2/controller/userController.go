@@ -5,12 +5,16 @@ import (
 	"net/http"
 	"project-2/config"
 	"project-2/model"
-	"project-2/tool"
-	"time"
+	"project-2/service"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.User
+
+	w.Header().Set("Content-Type", "application/json")
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -18,7 +22,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := CreateUser(user)
+	result, err := service.CreateUser(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -26,20 +30,10 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
-func CreateUser(user model.User) (*model.User, error) {
-	db := config.GetDB()
-
-	hashedPassword := tool.HashPassword(user.Password)
-	user.Password = hashedPassword
-	user.CreatedAt = time.Now()
-
-	err := db.Model(&model.User{}).Create(&user).Error
-
-	return &user, err
-}
-
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var loginParam model.LoginParam
+
+	w.Header().Set("Content-Type", "application/json")
 
 	err := json.NewDecoder(r.Body).Decode(&loginParam)
 	if err != nil {
@@ -47,28 +41,59 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isAllowed, user := IsLoginAllowed(loginParam); isAllowed {
+	if isAllowed, user := service.IsLoginAllowed(loginParam); isAllowed {
 		token := config.CreateToken(user.ID)
 
-		json.NewEncoder(w).Encode(token)
+		json.NewEncoder(w).Encode(map[string]string{
+			"token": token,
+		})
+		return
 	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "email and password not match",
+	})
 }
 
-func IsLoginAllowed(param model.LoginParam) (bool, *model.User) {
-	user, err := GetUserByEmail(param.Email)
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	var (
+		vars            = mux.Vars(r)
+		id              = vars["id"]
+		updateUserParam model.UpdateUserParam
+	)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err := json.NewDecoder(r.Body).Decode(&updateUserParam)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	return tool.CheckPasswordHash(param.Password, user.Password), user
+	intID, _ := strconv.Atoi(id)
+	user, err := service.UpdateUser(updateUserParam, intID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	json.NewEncoder(w).Encode(user)
 }
 
-func GetUserByEmail(email string) (*model.User, error) {
-	var user model.User
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	var (
+		vars = mux.Vars(r)
+		id   = vars["id"]
+	)
 
-	db := config.GetDB()
+	w.Header().Set("Content-Type", "application/json")
 
-	err := db.Model(&model.User{}).Where("email = ?", email).First(&user).Error
+	intID, _ := strconv.Atoi(id)
+	_, err := service.DeleteUser(intID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 
-	return &user, err
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Your account has been successfully deleted",
+	})
 }

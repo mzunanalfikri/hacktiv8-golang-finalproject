@@ -13,7 +13,7 @@ type Comment struct {
 	PhotoID   int
 	Message   string
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 }
 
 func (c *Comment) Validate() error {

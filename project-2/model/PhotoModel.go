@@ -10,11 +10,11 @@ import (
 type Photo struct {
 	ID        int
 	Title     string
-	Caption   string
+	Caption   *string
 	PhotoUrl  string
 	UserID    int
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 }
 
 func (p *Photo) Validate() error {

@@ -49,3 +49,8 @@ type LoginParam struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type UpdateUserParam struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+}
