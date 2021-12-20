@@ -49,23 +49,20 @@ func GetUserDetail(id int) (*model.User, error) {
 	return &user, err
 }
 
-func UpdateUser(param model.UpdateUserParam, id int) (*model.User, error) {
+func UpdateUser(user model.User) (*model.User, error) {
 	var (
 		currentTime = time.Now()
-		user        = model.User{
-			Email:     param.Email,
-			Username:  param.Username,
-			UpdatedAt: &currentTime,
-		}
-		db = config.GetDB()
+		db          = config.GetDB()
 	)
 
-	err := db.Model(&model.User{}).Where("id = ?", id).Updates(&user).Error
+	user.UpdatedAt = &currentTime
+
+	err := db.Model(&model.User{}).Where("id = ?", user.ID).Updates(&user).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return GetUserDetail(id)
+	return GetUserDetail(user.ID)
 }
 
 func DeleteUser(id int) (int, error) {

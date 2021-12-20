@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"project-2/config"
 	"project-2/controller"
+	"project-2/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -14,10 +15,19 @@ func main() {
 
 	r := mux.NewRouter()
 
+	userGroup := r.PathPrefix("/users").Subrouter()
+	userGroup.Use(middleware.JwtAuth)
+
 	r.HandleFunc("/users/register", controller.RegisterUser).Methods("POST")
 	r.HandleFunc("/users/login", controller.LoginUser).Methods("POST")
-	r.HandleFunc("/users/{id}", controller.UpdateUser).Methods("PUT")
-	r.HandleFunc("/users/{id}", controller.DeleteUser).Methods("DELETE")
+	userGroup.HandleFunc("", controller.UpdateUser).Methods("PUT")
+	userGroup.HandleFunc("", controller.DeleteUser).Methods("DELETE")
+
+	photoGroup := r.PathPrefix("/photos").Subrouter()
+	photoGroup.HandleFunc("", controller.CreatePhoto).Methods("POST")
+	photoGroup.HandleFunc("", controller.GetPhotos).Methods("GET")
+	photoGroup.HandleFunc("/{id}", controller.UpdatePhoto).Methods("PUT")
+	photoGroup.HandleFunc("/{id}", controller.DeletePhoto).Methods("DELETE")
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 

@@ -7,16 +7,16 @@ import (
 )
 
 type MyClaim struct {
+	ID int `json:"id"`
 	jwt.StandardClaims
-	ID int
 }
 
 var mySigningKey = []byte("MySecrets")
 
 func CreateToken(id int) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaim{
-		StandardClaims: jwt.StandardClaims{},
 		ID:             id,
+		StandardClaims: jwt.StandardClaims{},
 	})
 
 	signedStr, err := token.SignedString(mySigningKey)
@@ -28,8 +28,7 @@ func CreateToken(id int) string {
 }
 
 func VerifyToken(token string) bool {
-	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-
+	t, err := jwt.ParseWithClaims(token, &MyClaim{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
 		}
@@ -40,9 +39,28 @@ func VerifyToken(token string) bool {
 		panic(err)
 	}
 
-	if _, ok := t.Claims.(jwt.MapClaims); ok && t.Valid {
+	if _, ok := t.Claims.(*MyClaim); ok && t.Valid {
 		return true
 	}
 
 	return false
+}
+
+func GetClaim(token string) *MyClaim {
+	t, err := jwt.ParseWithClaims(token, &MyClaim{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+
+		return mySigningKey, nil
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	if v, ok := t.Claims.(*MyClaim); ok && t.Valid {
+		return v
+	}
+
+	return nil
 }

@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 	"net/http"
 	"project-2/config"
+	"project-2/middleware"
 	"project-2/model"
 	"project-2/service"
-	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
-	var user model.User
-
 	w.Header().Set("Content-Type", "application/json")
+
+	var user model.User
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -25,15 +23,21 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	result, err := service.CreateUser(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"id":       result.ID,
+		"age":      result.Age,
+		"email":    result.Email,
+		"username": result.Username,
+	})
 }
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
-	var loginParam model.LoginParam
-
 	w.Header().Set("Content-Type", "application/json")
+
+	var loginParam model.LoginParam
 
 	err := json.NewDecoder(r.Body).Decode(&loginParam)
 	if err != nil {
@@ -50,50 +54,56 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "email and password not match",
 	})
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	var (
-		vars            = mux.Vars(r)
-		id              = vars["id"]
-		updateUserParam model.UpdateUserParam
-	)
-
 	w.Header().Set("Content-Type", "application/json")
 
-	err := json.NewDecoder(r.Body).Decode(&updateUserParam)
+	var (
+		claim = middleware.GetClaim(r)
+		user  = model.User{
+			ID: claim.ID,
+		}
+	)
+
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	intID, _ := strconv.Atoi(id)
-	user, err := service.UpdateUser(updateUserParam, intID)
+	result, err := service.UpdateUser(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"id":         result.ID,
+		"email":      result.Email,
+		"username":   result.Username,
+		"age":        result.Age,
+		"updated_at": result.UpdatedAt,
+	})
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	var (
-		vars = mux.Vars(r)
-		id   = vars["id"]
-	)
-
 	w.Header().Set("Content-Type", "application/json")
 
-	intID, _ := strconv.Atoi(id)
-	_, err := service.DeleteUser(intID)
+	var (
+		claim = middleware.GetClaim(r)
+	)
+
+	_, err := service.DeleteUser(claim.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "Your account has been successfully deleted",
 	})
 }

@@ -24,3 +24,7 @@ func (s *SocialMedia) Validate() error {
 
 	return nil
 }
+
+func (SocialMedia) TableName() string {
+	return "social_media"
+}

@@ -23,3 +23,7 @@ func (c *Comment) Validate() error {
 
 	return nil
 }
+
+func (Comment) TableName() string {
+	return "comment"
+}

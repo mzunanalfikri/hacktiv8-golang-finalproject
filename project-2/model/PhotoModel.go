@@ -8,13 +8,14 @@ import (
 )
 
 type Photo struct {
-	ID        int
-	Title     string
-	Caption   *string
-	PhotoUrl  string
-	UserID    int
-	CreatedAt time.Time
-	UpdatedAt *time.Time
+	ID        int        `json:"id"`
+	Title     string     `json:"title"`
+	Caption   *string    `json:"caption"`
+	PhotoUrl  string     `json:"photo_url"`
+	UserID    int        `json:"user_id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at"`
+	User      User       `gorm:"foreignKey:UserID;references:ID"`
 }
 
 func (p *Photo) Validate() error {
@@ -27,4 +28,8 @@ func (p *Photo) Validate() error {
 	}
 
 	return nil
+}
+
+func (Photo) TableName() string {
+	return "photo"
 }
