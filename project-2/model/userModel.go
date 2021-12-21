@@ -10,7 +10,7 @@ import (
 type User struct {
 	ID        int        `json:"id"`
 	Username  string     `json:"username"`
-	Email     string     `json:"email"`
+	Email     string     `json:"email" gorm:"unique"`
 	Password  string     `json:"password"`
 	Age       int        `json:"age"`
 	CreatedAt time.Time  `json:"created_at"`

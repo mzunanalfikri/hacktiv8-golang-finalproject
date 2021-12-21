@@ -35,6 +35,12 @@ func main() {
 	commentGroup.HandleFunc("/{id}", controller.UpdateComment).Methods("PUT")
 	commentGroup.HandleFunc("/{id}", controller.DeleteComment).Methods("DELETE")
 
+	socialMediaGroup := r.PathPrefix("/socialmedias").Subrouter()
+	socialMediaGroup.HandleFunc("", controller.AddSocialMedia).Methods("POST")
+	socialMediaGroup.HandleFunc("", controller.GetSocialMedias).Methods("GET")
+	socialMediaGroup.HandleFunc("/{id}", controller.UpdateSocialMedia).Methods("PUT")
+	socialMediaGroup.HandleFunc("/{id}", controller.DeleteSocialMedia).Methods("DELETE")
+
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
 	log.Println("Server start at http://localhost:8080")

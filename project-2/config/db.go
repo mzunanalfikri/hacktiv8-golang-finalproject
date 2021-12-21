@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"project-2/model"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,6 +33,7 @@ func StartDB() {
 		log.Fatal("Error connecting to database :", err)
 	}
 
+	_ = db.AutoMigrate(model.User{}, model.Photo{}, model.Comment{}, model.SocialMedia{})
 	fmt.Println("Database connection success.")
 }
 

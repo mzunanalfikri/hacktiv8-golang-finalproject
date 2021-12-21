@@ -2,15 +2,19 @@ package model
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/asaskevich/govalidator"
 )
 
 type SocialMedia struct {
-	ID             int
-	Name           string
-	SocialMediaUrl string
-	UserID         int
+	ID             int        `json:"id"`
+	Name           string     `json:"name"`
+	SocialMediaUrl string     `json:"social_media_url"`
+	UserID         int        `json:"user_id"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      *time.Time `json:"updated_at"`
+	User           User       `gorm:"foreignKey:UserID;references:ID"`
 }
 
 func (s *SocialMedia) Validate() error {
