@@ -12,28 +12,28 @@ func GetCommentDetail(id int) (*model.Comment, error) {
 		db      = config.GetDB()
 	)
 
-	err := db.Model(&model.comment{}).Where("id = ?", id).First(&comment).Error
+	err := db.Model(&model.Comment{}).Where("id = ?", id).First(&comment).Error
 
 	return &comment, err
 }
 
-func CreateComment(comment model.Comment) (*model.comment, error) {
+func CreateComment(comment model.Comment) (*model.Comment, error) {
 	var (
 		db = config.GetDB()
 	)
 
-	err := db.Model(&model.Comment{}).Omit("User").Create(&comment).Error
+	err := db.Model(&model.Comment{}).Omit("User", "Photo").Create(&comment).Error
 
 	return &comment, err
 }
 
-func GetComments(userID int) ([]*model.Photo, error) {
+func GetComments(userID int) ([]*model.Comment, error) {
 	var (
 		comments []*model.Comment
 		db       = config.GetDB()
 	)
 
-	err := db.Model(&model.Photo{}).Preload("User").Where("user_id = ?", userID).Find(&comments).Error
+	err := db.Model(&model.Photo{}).Preload("User").Preload("Photo").Where("user_id = ?", userID).Find(&comments).Error
 
 	return comments, err
 }
@@ -43,7 +43,7 @@ func UpdateComment(comment model.Comment, userID int) (*model.Comment, error) {
 		db = config.GetDB()
 	)
 
-	res := db.Model(&model.Comment{}).Omit("User").Where("id = ? AND user_id = ?", comment.ID, userID).Updates(&comment)
+	res := db.Model(&model.Comment{}).Omit("User", "Photo").Where("id = ? AND user_id = ?", comment.ID, userID).Updates(&comment)
 	if res.Error != nil {
 		return nil, res.Error
 	}

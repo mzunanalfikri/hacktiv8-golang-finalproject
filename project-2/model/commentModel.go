@@ -14,6 +14,8 @@ type Comment struct {
 	Message   string
 	CreatedAt time.Time
 	UpdatedAt *time.Time
+	User      User  `gorm:"foreignKey:UserID;references:ID"`
+	Photo     Photo `gorm:"foreignKey:PhotoID;references:ID"`
 }
 
 func (c *Comment) Validate() error {

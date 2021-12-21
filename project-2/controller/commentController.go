@@ -16,7 +16,7 @@ func AddComments(w http.ResponseWriter, r *http.Request) {
 
 	var (
 		comment model.Comment
-		claim = middleware.GetClaim(r)
+		claim   = middleware.GetClaim(r)
 	)
 
 	err := json.NewDecoder(r.Body).Decode(&comment)
@@ -27,7 +27,7 @@ func AddComments(w http.ResponseWriter, r *http.Request) {
 
 	comment.UserID = claim.ID
 
-	result, err := service.AddComments(comment)
+	result, err := service.CreateComment(comment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -50,7 +50,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 		result = []map[string]interface{}{}
 	)
 
-	photos, err := service.GetComments(claim.ID)
+	comments, err := service.GetComments(claim.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -65,17 +65,17 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 			"updated_at": v.UpdatedAt,
 			"created_at": v.CreatedAt,
 			"user": map[string]interface{}{
-				"id":		v.user.ID,
+				"id":       v.User.ID,
 				"email":    v.User.Email,
 				"username": v.User.Username,
 			},
-			"photo":  map[string]interface{}{
-				"id":		 v.photo.ID,
-				"title": 	 v.photo.Title,
-				"caption": 	 v.photo.Caption,
-				"photo_url": v.photo.PhotoUrl,
-				"user_id": 	 v.photo.UserID,
-			}
+			"photo": map[string]interface{}{
+				"id":        v.Photo.ID,
+				"title":     v.Photo.Title,
+				"caption":   v.Photo.Caption,
+				"photo_url": v.Photo.PhotoUrl,
+				"user_id":   v.Photo.UserID,
+			},
 		})
 	}
 
@@ -108,11 +108,9 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"id":         			result.ID,
-		"name":       			result.Name,
-		"social_media_url":     result.SocialMediaURL,
-		"user_id":    			result.UserID,
-		"updated_at": 			result.UpdatedAt,
+		"id":         result.ID,
+		"message":    result.Message,
+		"updated_at": result.UpdatedAt,
 	})
 }
 
