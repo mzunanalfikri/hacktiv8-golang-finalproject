@@ -43,6 +43,7 @@ func main() {
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
+	// port := os.Getenv("PORT")
 	log.Println("Server start at http://localhost:8080")
 	http.ListenAndServe(":8080", r)
 }

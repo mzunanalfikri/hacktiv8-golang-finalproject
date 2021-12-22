@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// local
 var (
 	host     = "localhost"
 	user     = "postgres"
@@ -19,6 +20,16 @@ var (
 	db       *gorm.DB
 	err      error
 )
+
+// var (
+// 	host     = os.Getenv("DB_HOST")
+// 	user     = os.Getenv("DB_USER")
+// 	password = os.Getenv("DB_PASSWORD")
+// 	dbPort   = os.Getenv("DB_PORT")
+// 	dbname   = os.Getenv("DB_NAME")
+// 	db       *gorm.DB
+// 	err      error
+// )
 
 func StartDB() {
 	// using ssl
