@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"project-2/config"
 	"project-2/controller"
 	"project-2/middleware"
@@ -43,9 +44,9 @@ func main() {
 
 	r.NotFoundHandler = http.HandlerFunc(notfoundHandler)
 
-	// port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 	log.Println("Server start at http://localhost:8080")
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":"+port, r)
 }
 
 func notfoundHandler(w http.ResponseWriter, r *http.Request) {
