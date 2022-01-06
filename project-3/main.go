@@ -1,6 +1,7 @@
 package main
 
 import (
+	"project-3/middleware"
 	"project-3/model"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,8 @@ import (
 func main() {
 	r := gin.Default()
 
-	// test
+	r.Use(middleware.Auth())
+
 	r.POST("/", func(c *gin.Context) {
 		var user model.User
 		err := c.ShouldBind(&user)
