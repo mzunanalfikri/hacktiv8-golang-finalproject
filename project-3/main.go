@@ -1,8 +1,8 @@
 package main
 
 import (
+	"project-3/controller"
 	"project-3/middleware"
-	"project-3/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,15 +12,7 @@ func main() {
 
 	r.Use(middleware.Auth())
 
-	r.POST("/", func(c *gin.Context) {
-		var user model.User
-		err := c.ShouldBind(&user)
-		if err != nil {
-			panic(err)
-		}
-
-		c.JSON(200, user)
-	})
+	r.POST("/users/register", controller.RegisterUser)
 
 	r.Run(":8080")
 }
