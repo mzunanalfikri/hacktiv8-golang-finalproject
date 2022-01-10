@@ -7,6 +7,25 @@ import (
 	"time"
 )
 
+func IsLoginAllowed(param model.LoginParam) (bool, *model.User) {
+	user, err := GetUserByEmail(param.Email)
+	if err != nil {
+		return false, nil
+	}
+
+	return tool.CheckPasswordHash(param.Password, user.Password), user
+}
+
+func GetUserByEmail(email string) (*model.User, error) {
+	var user model.User
+
+	db := config.GetDB()
+
+	err := db.Model(&model.User{}).Where("email = ?", email).First(&user).Error
+
+	return &user, err
+}
+
 func CreateUser(user model.User) (*model.User, error) {
 	db := config.GetDB()
 

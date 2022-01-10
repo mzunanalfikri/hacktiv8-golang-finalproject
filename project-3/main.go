@@ -13,6 +13,7 @@ func main() {
 	r.Use(middleware.Auth())
 
 	r.POST("/users/register", controller.RegisterUser)
+	r.POST("/users/login", controller.RegisterUser)
 
 	r.Run(":8080")
 }
