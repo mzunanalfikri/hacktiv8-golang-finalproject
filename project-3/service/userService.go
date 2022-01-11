@@ -37,3 +37,30 @@ func CreateUser(user model.User) (*model.User, error) {
 
 	return &user, err
 }
+
+func UpdateUser(user model.User) (*model.User, error) {
+	var (
+		currentTime = time.Now()
+		db          = config.GetDB()
+	)
+
+	user.UpdatedAt = &currentTime
+
+	err := db.Model(&model.User{}).Where("id = ?", user.ID).Updates(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return GetUserDetail(user.ID)
+}
+
+func GetUserDetail(id int) (*model.User, error) {
+	var (
+		user model.User
+		db   = config.GetDB()
+	)
+
+	err := db.Model(&model.User{}).Where("id = ?", id).First(&user).Error
+
+	return &user, err
+}

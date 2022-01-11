@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"project-3/middleware"
 	"project-3/model"
 	"project-3/service"
 	"project-3/tool"
@@ -58,5 +59,35 @@ func LoginUser(c *gin.Context) {
 
 	c.JSON(http.StatusForbidden, map[string]interface{}{
 		"message": "email and password not match",
+	})
+}
+
+func UpdateUser(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
+	var (
+		claim = middleware.AuthContext(c)
+		user  = model.User{
+			ID: claim.ID,
+		}
+	)
+
+	err := c.ShouldBind(&user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	result, err := service.UpdateUser(user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id":         result.ID,
+		"full_name":  result.Fullname,
+		"email":      result.Email,
+		"updated_at": result.UpdatedAt,
 	})
 }
