@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"project-3/middleware"
 	"project-3/model"
@@ -67,10 +68,15 @@ func UpdateUser(c *gin.Context) {
 
 	var (
 		claim = middleware.AuthContext(c)
-		user  = model.User{
-			ID: claim.ID,
-		}
+		user  = model.User{}
 	)
+
+	if claim == nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Errorf("authorization header needed"))
+		return
+	}
+
+	user.ID = claim.ID
 
 	err := c.ShouldBind(&user)
 	if err != nil {
