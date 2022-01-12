@@ -64,3 +64,11 @@ func GetUserDetail(id int) (*model.User, error) {
 
 	return &user, err
 }
+
+func DeleteUser(id int) (int, error) {
+	db := config.GetDB()
+
+	err := db.Model(&model.User{}).Where("id = ?", id).Delete(&model.User{}).Error
+
+	return id, err
+}

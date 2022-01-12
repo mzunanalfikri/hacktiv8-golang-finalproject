@@ -97,3 +97,21 @@ func UpdateUser(c *gin.Context) {
 		"updated_at": result.UpdatedAt,
 	})
 }
+
+func DeleteUser(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
+	var (
+		claim = middleware.AuthContext(c)
+	)
+
+	_, err := service.DeleteUser(claim.ID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Your account has been successfully deleted",
+	})
+}

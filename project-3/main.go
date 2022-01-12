@@ -15,6 +15,7 @@ func main() {
 	r.POST("/users/register", controller.RegisterUser)
 	r.POST("/users/login", controller.RegisterUser)
 	r.POST("/users/update-account", controller.UpdateUser)
+	r.POST("/users/delete-account", controller.DeleteUser)
 
 	r.Run(":8080")
 }
