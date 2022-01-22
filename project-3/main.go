@@ -26,5 +26,12 @@ func main() {
 	authGroup.PATCH("/categories/:id", controller.UpdateCategory)
 	authGroup.DELETE("/categories/:id", controller.DeleteCategory)
 
+	authGroup.GET("/tasks", controller.GetTasks)
+	authGroup.POST("/tasks", controller.AddTask)
+	authGroup.POST("/tasks/:id", controller.UpdateTask)
+	authGroup.PATCH("/tasks/update-status/:id", controller.UpdateStatusTask)
+	authGroup.PATCH("/tasks/update-category/:id", controller.UpdateCategoryTask)
+	authGroup.DELETE("/tasks/:id", controller.DeleteTask)
+
 	r.Run(":8080")
 }
