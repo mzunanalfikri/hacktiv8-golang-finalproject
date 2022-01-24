@@ -23,7 +23,7 @@ func GetTasks(c *gin.Context) {
 		return
 	}
 
-	task, err := service.GetAllTasks()
+	tasks, err := service.GetAllTasks()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
@@ -91,20 +91,20 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"id":         	result.ID,
-		"title":  		result.Title,
-		"description":  result.Description,
-		"status":       result.Status,
-		"user_id":  	result.User_ID,
-		"category_id":  result.Email,
-		"updated_at": 	result.UpdatedAt,
+		"id":          result.ID,
+		"title":       result.Title,
+		"description": result.Description,
+		"status":      result.Status,
+		"user_id":     result.UserID,
+		"category_id": result.CategoryID,
+		"updated_at":  result.UpdatedAt,
 	})
 }
 
 func UpdateStatusTask(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	var category model.Task
+	var task model.Task
 
 	isAdmin, err := middleware.IsAdmin(c)
 	if err != nil {
@@ -117,7 +117,7 @@ func UpdateStatusTask(c *gin.Context) {
 		return
 	}
 
-	err = c.ShouldBind(&category)
+	err = c.ShouldBind(&task)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
@@ -139,7 +139,7 @@ func UpdateStatusTask(c *gin.Context) {
 func UpdateCategoryTask(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	var category model.Task
+	var task model.Task
 
 	isAdmin, err := middleware.IsAdmin(c)
 	if err != nil {
@@ -168,6 +168,7 @@ func UpdateCategoryTask(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
 
 func DeleteTask(c *gin.Context) {
 	c.Header("Content-Type", "application/json")

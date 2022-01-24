@@ -7,7 +7,7 @@ import (
 )
 
 func GetAllTasks() ([]*model.Task, error) {
-	var task []*model.Task
+	var tasks []*model.Task
 
 	db := config.GetDB()
 
@@ -51,7 +51,6 @@ func GetTaskDetail(id int) (*model.Task, error) {
 	return &task, err
 }
 
-
 func DeleteTaskById(id int) (interface{}, error) {
 	db := config.GetDB()
 
@@ -68,12 +67,12 @@ func UpdateStatusByTaskId(task model.Task) (*model.Task, error) {
 	)
 
 	task.UpdatedAt = &currentTime
-	err := db.Model(model.Task{}).Where("id = ?", task.ID).Updates(&status).Error
+	err := db.Model(model.Task{}).Where("id = ?", task.ID).Updates(&task).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return &status, nil
+	return &task, nil
 }
 
 func UpdateCategoryByTaskId(task model.Task) (*model.Task, error) {
@@ -84,11 +83,10 @@ func UpdateCategoryByTaskId(task model.Task) (*model.Task, error) {
 	)
 
 	task.UpdatedAt = &currentTime
-	err := db.Model(model.Task{}).Where("id = ?", task.ID).Updates(&category).Error
+	err := db.Model(model.Task{}).Where("id = ?", task.ID).Updates(&task).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return &category, err
+	return &task, err
 }
-
