@@ -1,12 +1,11 @@
-// +heroku goVersion go1.17
-module project-3
+module project-4
 
 go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
+	golang.org/x/crypto v0.0.0-20220126234351-aa10faf2a1f8
 	gorm.io/driver/postgres v1.2.3
 	gorm.io/gorm v1.22.5
 )
@@ -18,7 +17,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.10.1 // indirect`
+	github.com/jackc/pgconn v1.10.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.2.0 // indirect

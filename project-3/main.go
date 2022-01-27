@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"project-3/config"
 	"project-3/controller"
 	"project-3/middleware"
@@ -33,5 +34,5 @@ func main() {
 	authGroup.PATCH("/tasks/update-category/:id", controller.UpdateCategoryTask)
 	authGroup.DELETE("/tasks/:id", controller.DeleteTask)
 
-	r.Run(":8080")
+	r.Run(":" + os.Getenv("PORT"))
 }
