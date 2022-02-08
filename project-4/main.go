@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"project-4/config"
+	"project-4/controller"
 	"project-4/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,17 @@ func main() {
 
 	r := gin.Default()
 	r.Use(middleware.Auth())
+
+	r.POST("/users/register", controller.RegisterUser)
+	r.POST("/users/login", controller.LoginUser)
+	r.PATCH("/users/topup", controller.TopupUser)
+
+	adminGroup := r.Group("")
+	adminGroup.Use(middleware.IsAdmin())
+	adminGroup.POST("/categories", controller.CreateCategory)
+	adminGroup.GET("/categories", controller.GetCategories)
+	adminGroup.PATCH("/categories/:categoryId", controller.UpdateCategory)
+	adminGroup.DELETE("/categories/:categoryId", controller.DeleteCategory)
 
 	r.Run(":" + port)
 }

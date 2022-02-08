@@ -50,3 +50,14 @@ func UpdateUserBalance(user model.User) (*model.User, error) {
 
 	return &user, err
 }
+
+func GetUserDetail(id int) (*model.User, error) {
+	var (
+		user model.User
+		db   = config.GetDB()
+	)
+
+	err := db.Model(&model.User{}).Where("id = ?", id).First(&user).Error
+
+	return &user, err
+}
