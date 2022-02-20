@@ -46,7 +46,7 @@ func UpdateCategory(category model.Category) (*model.Category, error) {
 
 	category.UpdatedAt = &now
 
-	err := db.Model(&model.Category{}).Where("id = ?", category).Update("type", category.Type).Error
+	err := db.Model(&model.Category{}).Where("id = ?", category.ID).Update("type", category.Type).Error
 	if err != nil {
 		return nil, err
 	}
