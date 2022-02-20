@@ -20,13 +20,15 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Use(middleware.Auth())
-
 	r.POST("/users/register", controller.RegisterUser)
 	r.POST("/users/login", controller.LoginUser)
-	r.PATCH("/users/topup", controller.TopupUser)
+
+	authGroup := r.Group("")
+	authGroup.Use(middleware.Auth())
+	authGroup.PATCH("/users/topup", controller.TopupUser)
 
 	adminGroup := r.Group("")
+	adminGroup.Use(middleware.Auth())
 	adminGroup.Use(middleware.IsAdmin())
 	adminGroup.POST("/categories", controller.CreateCategory)
 	adminGroup.GET("/categories", controller.GetCategories)

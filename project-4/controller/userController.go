@@ -13,7 +13,7 @@ import (
 
 func RegisterUser(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-
+	fmt.Println("cek user")
 	var (
 		user = model.User{
 			Role:    "customer",
@@ -21,9 +21,10 @@ func RegisterUser(c *gin.Context) {
 		}
 		password string
 	)
-
+	fmt.Println(user)
 	err := c.ShouldBind(&user)
 	if err != nil {
+		fmt.Println(err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -86,13 +87,16 @@ func TopupUser(c *gin.Context) {
 
 	user.ID = claim.ID
 
-	err := c.ShouldBind(&user)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+	_ = c.ShouldBind(&user)
+
+	newUser, errGetUser := service.GetUserDetail(claim.ID)
+	if errGetUser != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, errGetUser.Error())
 		return
 	}
+	newUser.Balance += user.Balance
 
-	result, err := service.UpdateUserBalance(user)
+	result, err := service.UpdateUserBalance(*newUser)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

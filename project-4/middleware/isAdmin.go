@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"project-4/service"
 
@@ -12,6 +13,8 @@ func IsAdmin() gin.HandlerFunc {
 		claim := AuthContext(c)
 
 		if claim == nil {
+			fmt.Println("lalalalallilili")
+
 			c.AbortWithStatusJSON(http.StatusForbidden, "Authorization header required!")
 			return
 		}

@@ -27,9 +27,9 @@ func GetCategoryDetail(id int) (*model.Category, error) {
 	return &category, err
 }
 
-func GetAllCategories() (*model.Category, error) {
+func GetAllCategories() (*[]model.Category, error) {
 	var (
-		category model.Category
+		category []model.Category
 		db       = config.GetDB()
 	)
 
