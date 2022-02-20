@@ -26,6 +26,8 @@ func main() {
 	authGroup := r.Group("")
 	authGroup.Use(middleware.Auth())
 	authGroup.PATCH("/users/topup", controller.TopupUser)
+	authGroup.POST("/transactions", controller.BuyProduct)
+	authGroup.GET("/transactions/my-transactions", controller.GetUserTransaction)
 
 	adminGroup := r.Group("")
 	adminGroup.Use(middleware.Auth())
@@ -35,5 +37,11 @@ func main() {
 	adminGroup.PATCH("/categories/:categoryId", controller.UpdateCategory)
 	adminGroup.DELETE("/categories/:categoryId", controller.DeleteCategory)
 
+	adminGroup.POST("/products", controller.CreateProduct)
+	adminGroup.GET("/products", controller.GetAllProducts)
+	adminGroup.DELETE("/products/:productId", controller.DeleteProducts)
+	adminGroup.PUT("/products/:productId", controller.UpdateProduct)
+
+	adminGroup.GET("/transactions/user-transactions", controller.GetAllTransaction)
 	r.Run(":" + port)
 }
