@@ -1,6 +1,5 @@
-module project-4
-
 // +heroku goVersion go1.15
+module project-4
 
 go 1.15
 
