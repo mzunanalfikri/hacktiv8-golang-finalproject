@@ -1,7 +1,7 @@
-// +heroku goVersion go1.15
+// +heroku goVersion go1.17
 module project-4
 
-go 1.15
+go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
